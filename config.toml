@@ -1,0 +1,39 @@
+[app]
+name = "RAG Application"
+version = "1.0.0"
+debug = false
+
+[milvus]
+host = "localhost"
+port = 19530
+collection_name = "rag_documents"
+
+[embedding]
+model = "sentence-transformers/all-MiniLM-L6-v2"
+dimension = 384
+batch_size = 32
+
+[ollama]
+base_url = "http://localhost:11434"
+model = "llama3"
+temperature = 0.7
+max_tokens = 2000
+
+[document_processing]
+chunk_size = 1000
+chunk_overlap = 200
+supported_extensions = [".txt", ".pdf", ".docx", ".md"]
+
+[retrieval]
+top_k = 5
+similarity_threshold = 0.7
+
+[server]
+host = "0.0.0.0"
+port = 8000
+reload = false
+workers = 1
+
+[paths]
+data_dir = "./data"
+upload_dir = "./uploads"

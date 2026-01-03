@@ -33,7 +33,7 @@ ENV/
 *.swo
 *~
 
-# Environment variables
+# Environment variables (not used - we use config.toml)
 .env
 
 # Data

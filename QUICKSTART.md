@@ -33,24 +33,28 @@ ollama pull llama3
 ollama serve
 ```
 
-## Step 3: Install the Application (1 minute)
+## Step 3: Install Dependencies (1 minute)
 
 ```bash
 # Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install the package
-pip install -e .
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ## Step 4: Configure (30 seconds)
 
-```bash
-# Copy environment template
-cp .env.example .env
+The application uses `config.toml` for configuration. The default settings should work, but you can customize:
 
-# The defaults use llama3, but you can edit if needed
+```toml
+# Edit config.toml
+[ollama]
+model = "llama3"  # Change if using different model
+
+[server]
+port = 8000       # API server port
 ```
 
 ## Step 5: Add Documents (30 seconds)
@@ -64,11 +68,18 @@ mkdir -p data
 echo "Machine learning is a subset of artificial intelligence that focuses on building systems that learn from data." > data/sample.txt
 ```
 
-## Step 6: Ingest Documents (1 minute)
+## Step 6: Check Status (Optional)
+
+```bash
+# Check if everything is running
+rag status
+```
+
+## Step 7: Ingest Documents (1 minute)
 
 ```bash
 # Ingest all documents
-rag-ingest ./data/
+rag ingest ./data/
 ```
 
 You should see:
@@ -78,11 +89,11 @@ You should see:
 ✓ Stored in Milvus
 ```
 
-## Step 7: Query! (Now!)
+## Step 8: Query! (Now!)
 
 ```bash
 # Start interactive chat
-rag-query
+rag query
 ```
 
 Try asking:
@@ -92,7 +103,7 @@ You: What is machine learning?
 
 Or use single query mode:
 ```bash
-rag-query --query "What is machine learning?"
+rag query -q "What is machine learning?"
 ```
 
 ## Troubleshooting
@@ -161,32 +172,47 @@ Available models:
 - `codellama` (for code-related queries)
 - `phi` (lightweight)
 
+## Bonus: Try the API Server!
+
+```bash
+# Start the API server
+rag-server
+
+# In another terminal, try the API
+curl "http://localhost:8000/status"
+curl -X POST "http://localhost:8000/query" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is machine learning?"}'
+
+# Visit interactive docs
+open http://localhost:8000/docs
+```
+
 ## Next Steps
 
-- Check [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for architecture details
+- Try the **API Server**: `rag-server` for REST API access
+- Read [API Documentation](docs/API_DOCUMENTATION.md) for API reference
+- Check [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for architecture
 - See [examples/example_usage.py](examples/example_usage.py) for programmatic usage
 - Read [README.md](README.md) for complete documentation
 
 ## Quick Commands
 
 ```bash
-# Start Milvus
-./scripts/start_milvus.sh
+# CLI Mode
+python main.py cli status                    # Check system status
+python main.py cli ingest ./data/           # Ingest documents
+python main.py cli query                     # Interactive chat
+python main.py cli query -q "your question" # Single question
+python main.py cli reset                     # Reset collection
 
-# Stop Milvus
-./scripts/stop_milvus.sh
+# Server Mode
+python main.py server                        # Start API server
+python main.py server --port 8080           # Custom port
 
-# Ingest documents
-rag-ingest ./data/
-
-# Query (interactive)
-rag-query
-
-# Query (single)
-rag-query --query "your question"
-
-# View logs
-docker-compose logs -f standalone
+# Milvus Management
+./scripts/start_milvus.sh                   # Start Milvus
+./scripts/stop_milvus.sh                    # Stop Milvus
 ```
 
 ## Common Issues

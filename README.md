@@ -6,12 +6,14 @@ A production-ready, end-to-end Retrieval-Augmented Generation (RAG) application 
 
 - 📄 **Multi-format Document Support**: TXT, PDF, DOCX, and Markdown
 - 🔍 **Efficient Vector Search**: Powered by MilvusDB with IVF_FLAT indexing
-- 🤖 **Local LLM Integration**: Uses Ollama for privacy-focused inference
-- 💬 **Interactive Chat Interface**: Command-line chat with streaming responses
-- 🎯 **Flexible Querying**: Single query or interactive modes
-- ⚙️ **Easy Configuration**: Environment-based settings
+- 🤖 **Local LLM Integration**: Uses Ollama (Llama3) for privacy-focused inference
+- 💬 **Dual Interface**: CLI and REST API server modes
+- 🌐 **REST API**: FastAPI server with interactive documentation
+- 🎯 **Flexible Querying**: Single query, interactive chat, or API calls
+- ⚙️ **TOML Configuration**: Clean, readable configuration file
 - 📦 **Installable Package**: Install via pip with CLI commands
 - 🧪 **Unit Tests**: Comprehensive test coverage
+- 🔄 **Streaming Support**: Real-time response streaming
 
 ## 📁 Project Structure
 
@@ -58,8 +60,8 @@ cd rag_application
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install the package
-pip install -e .
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### Setup Services
@@ -85,12 +87,24 @@ ollama serve
 
 ### Configuration
 
-```bash
-cp .env.example .env
-# Edit .env with your settings
+Edit `config.toml` to customize settings:
+
+```toml
+[ollama]
+model = "llama3"  # Change model here
+
+[server]
+port = 8000       # Change server port
 ```
 
 ### Usage
+
+#### CLI Mode
+
+**Check Status:**
+```bash
+python main.py cli status
+```
 
 **Ingest Documents:**
 ```bash
@@ -99,40 +113,71 @@ mkdir data
 # Add your PDF, TXT, DOCX, or MD files
 
 # Ingest documents
-rag-ingest ./data/
+python main.py cli ingest ./data/
 ```
 
 **Query the System:**
 ```bash
 # Interactive chat
-rag-query
+python main.py cli query
 
-# Single query
-rag-query --query "What is machine learning?"
+# Single question
+python main.py cli query -q "What is machine learning?"
+```
+
+#### Server Mode
+
+**Start the API Server:**
+```bash
+python main.py server
+```
+
+**Access the API:**
+- API: http://localhost:8000
+- Interactive Docs: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+**Example API Calls:**
+```bash
+# Query via API
+curl -X POST "http://localhost:8000/query" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is AI?", "top_k": 5}'
+
+# Upload document
+curl -X POST "http://localhost:8000/documents/upload" \
+  -F "file=@document.pdf"
+
+# Ingest documents
+curl -X POST "http://localhost:8000/documents/ingest" \
+  -H "Content-Type: application/json" \
+  -d '{"reset": false}'
 ```
 
 ## 📚 Documentation
 
 - **[Quick Start](QUICKSTART.md)**: Get started in 5 minutes
+- **[API Documentation](docs/API_DOCUMENTATION.md)**: Complete API reference
 - **[Milvus Setup](docs/MILVUS_SETUP.md)**: Milvus installation and troubleshooting
 - **[Project Structure](docs/PROJECT_STRUCTURE.md)**: Codebase organization
 
-## 🔧 Configuration Options
+## 🔧 Configuration
 
-Key environment variables in `.env`:
+Configuration is managed via `config.toml`:
 
-```env
-# Milvus
-MILVUS_HOST=localhost
-MILVUS_PORT=19530
-COLLECTION_NAME=rag_documents
+```toml
+[milvus]
+host = "localhost"
+port = 19530
+collection_name = "rag_documents"
 
-# Embeddings
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+[embedding]
+model = "sentence-transformers/all-MiniLM-L6-v2"
+dimension = 384
 
-# Ollama
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama2
+[ollama]
+base_url = "http://localhost:11434"
+model = "llama3"
 
 # Processing
 CHUNK_SIZE=1000

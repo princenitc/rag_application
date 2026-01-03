@@ -1,34 +1,35 @@
 """
 Configuration file for RAG application
+Uses TOML configuration via config_loader
 """
-import os
-from dotenv import load_dotenv
+from .config_loader import get_config
 
-load_dotenv()
+# Load configuration
+_cfg = get_config()
 
 # Milvus Configuration
-MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
-MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
-COLLECTION_NAME = os.getenv("COLLECTION_NAME", "rag_documents")
+MILVUS_HOST = _cfg.milvus['host']
+MILVUS_PORT = str(_cfg.milvus['port'])
+COLLECTION_NAME = _cfg.milvus['collection_name']
 
 # Embedding Configuration
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-EMBEDDING_DIMENSION = 384  # Dimension for all-MiniLM-L6-v2
+EMBEDDING_MODEL = _cfg.embedding['model']
+EMBEDDING_DIMENSION = _cfg.embedding['dimension']
 
 # Ollama Configuration
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
+OLLAMA_BASE_URL = _cfg.ollama['base_url']
+OLLAMA_MODEL = _cfg.ollama['model']
 
 # Document Processing Configuration
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
+CHUNK_SIZE = _cfg.document_processing['chunk_size']
+CHUNK_OVERLAP = _cfg.document_processing['chunk_overlap']
+SUPPORTED_EXTENSIONS = _cfg.document_processing['supported_extensions']
 
 # Retrieval Configuration
-TOP_K = int(os.getenv("TOP_K", "5"))
-SIMILARITY_THRESHOLD = float(os.getenv("SIMILARITY_THRESHOLD", "0.7"))
+TOP_K = _cfg.retrieval['top_k']
+SIMILARITY_THRESHOLD = _cfg.retrieval['similarity_threshold']
 
 # Application Settings
-DATA_DIR = os.getenv("DATA_DIR", "./data")
-SUPPORTED_EXTENSIONS = [".txt", ".pdf", ".docx", ".md"]
+DATA_DIR = _cfg.paths['data_dir']
 
 # Made with Bob
