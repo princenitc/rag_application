@@ -2,10 +2,15 @@
 RAG Pipeline for query processing and response generation
 """
 import ollama
+import sys
+import logging
 from typing import List, Dict
 from .. import config
 from .embedding_manager import EmbeddingManager
 from .milvus_manager import MilvusManager
+
+# Configure logging to stderr
+logger = logging.getLogger(__name__)
 
 
 class RAGPipeline:
@@ -29,7 +34,7 @@ class RAGPipeline:
         
         # Configure ollama client
         self.client = ollama.Client(host=self.ollama_base_url)
-        print(f"RAG Pipeline initialized with model: {self.ollama_model}")
+        logger.info(f"RAG Pipeline initialized with model: {self.ollama_model}")
     
     def retrieve_context(self, query: str, top_k: int = None) -> List[Dict]:
         """
@@ -130,7 +135,7 @@ Answer:"""
         except Exception as e:
             return f"Error generating response: {str(e)}"
     
-    def query(self, query: str, top_k: int = None, stream: bool = False, 
+    def query(self, query: str, top_k: int = None, stream: bool = False,
               show_context: bool = False) -> Dict:
         """
         Process a query through the RAG pipeline
@@ -144,12 +149,12 @@ Answer:"""
         Returns:
             Dictionary with response and metadata
         """
-        print(f"\nProcessing query: {query}")
+        logger.info(f"Processing query: {query}")
         
         # Retrieve context
-        print("Retrieving relevant documents...")
+        logger.info("Retrieving relevant documents...")
         results = self.retrieve_context(query, top_k)
-        print(f"Retrieved {len(results)} documents")
+        logger.info(f"Retrieved {len(results)} documents")
         
         # Format context
         context = self.format_context(results)
@@ -158,7 +163,7 @@ Answer:"""
         prompt = self.generate_prompt(query, context)
         
         # Generate response
-        print("Generating response...")
+        logger.info("Generating response...")
         response = self.generate_response(prompt, stream)
         
         result = {

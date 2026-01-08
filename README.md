@@ -202,6 +202,24 @@ rag = RAGPipeline(embedding_manager, milvus_manager)
 # Query
 result = rag.query("What is AI?", top_k=5)
 print(result['response'])
+## 📚 Documentation
+
+### Quick Start Guides
+- **[MCP_FINAL_SETUP.md](MCP_FINAL_SETUP.md)**: ✅ **START HERE** - Complete working MCP setup
+- **[QUICK_START_MCP.md](QUICK_START_MCP.md)**: 5-minute MCP quick start
+- **[QUICKSTART.md](QUICKSTART.md)**: General application quick start
+
+### MCP Server Documentation
+- **[HOW_TO_USE_MCP.md](HOW_TO_USE_MCP.md)**: Complete MCP usage guide with examples
+- **[CLAUDE_DESKTOP_SETUP.md](CLAUDE_DESKTOP_SETUP.md)**: Detailed Claude Desktop setup
+- **[MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md)**: General MCP information
+- **[docs/MCP_SERVER.md](docs/MCP_SERVER.md)**: Technical MCP API documentation
+
+### General Documentation
+- **[API Documentation](docs/API_DOCUMENTATION.md)**: Complete REST API reference
+- **[Milvus Setup](docs/MILVUS_SETUP.md)**: Milvus installation and troubleshooting
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)**: Codebase organization
+
 ```
 
 ## 🧪 Testing

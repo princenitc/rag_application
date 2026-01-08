@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "rag-application": {
+      "command": "/Users/prince/IKC/learning/rag_application/.venv/bin/python",
+      "args": [
+        "-m",
+        "src.rag_app.mcp_server"
+      ],
+      "cwd": "/Users/prince/IKC/learning/rag_application",
+      "env": {
+        "PYTHONPATH": "/Users/prince/IKC/learning/rag_application"
+      }
+    }
+  }
+}
